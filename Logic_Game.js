@@ -86,7 +86,23 @@ function selecting_circles(e, matrix_of_states, field_context) {
 	if (!check_for_select(matrix_of_states)) {
 		if (check_for_circle(row, col, matrix_of_states)) {
 			matrix_of_states[row][col] = 2;
-			paint_circle(row, col, field_context);
+			let width_of_sqare = (FIELD_WIDTH / COL);
+			let height_of_sqare = (FIELD_HEIGHT / ROW);
+
+			field_context.clearRect((width_of_sqare * col) + 2, (height_of_sqare * row) + 2, width_of_sqare - 2, height_of_sqare - 2);
+
+			field_context.beginPath();
+
+			let  radius, x, y;
+			x = (col * width_of_sqare) + (width_of_sqare / 2);
+			y = (row * height_of_sqare) + (height_of_sqare / 2);
+			radius = (width_of_sqare / 2) - 5;
+
+			field_context.arc(x, y, radius, 0, Math.PI * 2, false);
+			field_context.strokeStyle = "red";
+			field_context.stroke();
+
+			field_context.closePath(); 
 		}
 	} else {
 		console.log("Is selected");
@@ -118,25 +134,4 @@ function check_for_circle(row, col, matrix_of_states) {
 		return true;
 	else
 		return false;
-}
-
-function paint_circle(row, col, field_context) {
-	// body...
-	let width_of_sqare = (FIELD_WIDTH / COL);
-	let height_of_sqare = (FIELD_HEIGHT / ROW);
-
-	field_context.clearRect((width_of_sqare * col) + 2, (height_of_sqare * row) + 2, width_of_sqare - 2, height_of_sqare - 2);
-
-	field_context.beginPath();
-
-	let  radius, x, y;
-	x = (col * width_of_sqare) + (width_of_sqare / 2);
-	y = (row * height_of_sqare) + (height_of_sqare / 2);
-	radius = (width_of_sqare / 2) - 5;
-
-	field_context.arc(x, y, radius, 0, Math.PI * 2, false);
-	field_context.strokeStyle = "red";
-	field_context.stroke();
-
-	field_context.closePath();
 }
