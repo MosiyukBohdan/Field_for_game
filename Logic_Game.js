@@ -6,7 +6,6 @@ const FIELD_HEIGHT = 500;
 document.addEventListener("DOMContentLoaded", show_field);
 
 function show_field() {
-	// body...
 	let matrix_of_states = [];
 	filling_matrix_of_states(matrix_of_states);
 
@@ -67,7 +66,6 @@ function draw_circles(matrix_of_states) {
 }
 
 function filling_matrix_of_states(matrix_of_states) {
-	// body...
 	for (let i = 0; i < ROW; i++) {
 		matrix_of_states[i] = [];
 
@@ -78,7 +76,6 @@ function filling_matrix_of_states(matrix_of_states) {
 }
 
 function selecting_circles(e, matrix_of_states, field_context) {
-	// body...
 	let RowCol = event_coordinates(e);
 	let row = RowCol["row"];
 	let col = RowCol["col"];
@@ -99,25 +96,57 @@ function selecting_circles(e, matrix_of_states, field_context) {
 			radius = (width_of_sqare / 2) - 5;
 
 			field_context.arc(x, y, radius, 0, Math.PI * 2, false);
-			field_context.strokeStyle = "red";
+			field_context.strokeStyle = "#f00";
 			field_context.stroke();
 
 			field_context.closePath(); 
 		}
 	} else {
-		console.log("Is selected");
+		if (!check_for_circle(row, col, matrix_of_states)) {
+			matrix_of_states[row][col] = 1;
+
+			let row_remove, col_remove;
+
+			for (let i = 0; i < ROW; i++) {
+				for (let j = 0; j < COL; j++) {
+					if (matrix_of_states[i][j] == 2) {
+						row_remove = i;
+						col_remove = j;
+						matrix_of_states[i][j] = 0;
+					}
+				}
+			}
+
+			let width_of_sqare = (FIELD_WIDTH / COL);
+			let height_of_sqare = (FIELD_HEIGHT / ROW);
+
+			field_context.clearRect((width_of_sqare * col_remove) + 2, (height_of_sqare * row_remove) + 2, width_of_sqare - 2, height_of_sqare - 2);
+
+			field_context.beginPath();
+
+			let  radius, x, y;
+			x = (col * width_of_sqare) + (width_of_sqare / 2);
+			y = (row * height_of_sqare) + (height_of_sqare / 2);
+			radius = (width_of_sqare / 2) - 5;
+
+			field_context.arc(x, y, radius, 0, Math.PI * 2, false);
+			field_context.strokeStyle = "#000";
+			field_context.stroke();
+
+			field_context.closePath(); 
+
+		}
+
 	}
 }
 
 function event_coordinates(e) {
-	// body...
 	let row = Math.floor(e.clientY / (FIELD_HEIGHT / ROW));
 	let col = Math.floor(e.clientX / (FIELD_WIDTH / COL));
 	return {"row":row, "col":col};
 }
 
 function check_for_select(matrix_of_states) {
-	// body...
 	for (let i = 0; i < ROW; i ++) {
 		for (let j = 0; j < COL; j++) {
 			if (matrix_of_states[i][j] == 2)
@@ -129,7 +158,6 @@ function check_for_select(matrix_of_states) {
 }
 
 function check_for_circle(row, col, matrix_of_states) {
-	// body...
 	if (matrix_of_states[row][col] == 1 || matrix_of_states[row][col] == 2)
 		return true;
 	else
