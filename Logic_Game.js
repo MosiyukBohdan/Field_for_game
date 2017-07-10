@@ -6,9 +6,16 @@ const FIELD_HEIGHT = 500;
 document.addEventListener("DOMContentLoaded", show_field);
 
 function show_field() {
-	let matrix_of_states = [];
-	filling_matrix_of_states(matrix_of_states);
+	let matrix_of_states;
 
+	if (typeof(Storage) !== "undefined") {
+		if (localStorage['position']) 
+			matrix_of_states = filling_matrix_of_states(localStorage['position']);
+		else
+			matrix_of_states = filling_matrix_of_states();
+	}
+
+	console.log(matrix_of_states);
 	let field = document.getElementById('field_of_game');
 	field_context = field.getContext("2d");
 
@@ -21,7 +28,6 @@ function show_field() {
 }
 
 function draw_grid() {
-	let a = 5;
 	field_context.beginPath();
 
 	for (let x = 0.5; x < (COL * 100) + 1; x += 100) {
@@ -41,38 +47,59 @@ function draw_grid() {
 }
 
 function draw_circles(matrix_of_states) {
-	// body...
 	let  radius, x, y;
 	let width_of_sqare = (FIELD_WIDTH / COL);
 	let height_of_sqare = (FIELD_HEIGHT / ROW);	
 
-	for (let rows = 3; rows < ROW; rows++) {
-		for (let cols = 0; cols < COL - 2; cols++) {
-			x = (cols * width_of_sqare) + (width_of_sqare / 2);
-			y = (rows * height_of_sqare) + (height_of_sqare / 2);
-			radius = (width_of_sqare / 2) - 5;
+	for (let rows = 0; rows < ROW; rows++) {
+		for (let cols = 0; cols < COL; cols++) {
 
-			field_context.beginPath();
-			
-			field_context.arc(x, y, radius, 0, Math.PI * 2, false);
-			field_context.strokeStyle = "#000";
-			field_context.stroke();
+			if (matrix_of_states[rows][cols] == 1 || matrix_of_states[rows][cols] == 2) {
+				x = (cols * width_of_sqare) + (width_of_sqare / 2);
+				y = (rows * height_of_sqare) + (height_of_sqare / 2);
+				radius = (width_of_sqare / 2) - 5;
 
-			matrix_of_states[rows][cols] = 1;
-			
-			field_context.closePath();
+				field_context.beginPath();
+				
+				field_context.arc(x, y, radius, 0, Math.PI * 2, false);
+
+				if (matrix_of_states[rows][cols] == 1)
+					field_context.strokeStyle = "#000";
+				else
+					field_context.strokeStyle = "#f00";
+
+				field_context.stroke();
+
+				matrix_of_states[rows][cols] = 1;
+				
+				field_context.closePath();
+			}
+
 		}
 	}
 }
 
-function filling_matrix_of_states(matrix_of_states) {
-	for (let i = 0; i < ROW; i++) {
-		matrix_of_states[i] = [];
+function filling_matrix_of_states(position) {
+	let matrix_of_states = [];
+	if (typeof(position) === "undefined") {
 
-		for (let j = 0; j < COL; j++) {
-			matrix_of_states[i][j] = 0;
+		for (let i = 0; i < ROW; i++) {
+			matrix_of_states[i] = [];
+
+			for (let j = 0; j < COL; j++) {
+				matrix_of_states[i][j] = 0;
+
+				if (i > 2 && j < 3)
+					matrix_of_states[i][j] = 1;
+			}
 		}
+
+	} else {
+		matrix_of_states = JSON.parse(position);
+		console.log(matrix_of_states);
 	}
+
+	return matrix_of_states;
 }
 
 function selecting_circles(e, matrix_of_states, field_context) {
@@ -138,6 +165,9 @@ function selecting_circles(e, matrix_of_states, field_context) {
 		}
 
 	}
+
+	let StoragePosition = JSON.stringify(matrix_of_states);
+	localStorage.setItem("position", StoragePosition);
 }
 
 function event_coordinates(e) {
