@@ -22,14 +22,12 @@ function show_field() {
 
 	let restart_button = document.getElementById('Restart');
 	restart_button.addEventListener("click", function() { 
-		console.log("restart");
 		localStorage.removeItem('position');
 		clear_field();
 		matrix_of_states = filling_matrix_of_states();
 		draw_grid();
 		draw_circles(matrix_of_states);
 	});
-	console.log("Show");
 	draw_grid();
 	draw_circles(matrix_of_states);
 }
