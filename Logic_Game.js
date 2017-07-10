@@ -69,8 +69,6 @@ function draw_circles(matrix_of_states) {
 					field_context.strokeStyle = "#f00";
 
 				field_context.stroke();
-
-				matrix_of_states[rows][cols] = 1;
 				
 				field_context.closePath();
 			}
