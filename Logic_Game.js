@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", show_field);
 
 function show_field() {
 	let matrix_of_states;
-	localStorage.removeItem('position');
 	if (typeof(Storage) !== "undefined") {
 		if (localStorage['position']) 
 			matrix_of_states = filling_matrix_of_states(localStorage['position']);
@@ -15,11 +14,18 @@ function show_field() {
 			matrix_of_states = filling_matrix_of_states();
 	}
 
+	console.log(matrix_of_states);
+
 	let field = document.getElementById('field_of_game');
 	field_context = field.getContext("2d");
-
 	field.addEventListener("click", function(event) { 
 		selecting_circles(event, matrix_of_states, field_context);
+	});
+
+	let restart_button = document.getElementById('Restart');
+	restart_button.addEventListener("click", function() { 
+		localStorage.removeItem('position');
+		show_field();
 	});
 
 	draw_grid();
@@ -70,8 +76,9 @@ function draw_circles(matrix_of_states) {
 				field_context.stroke();
 				
 				field_context.closePath();
-			}
-
+			} else 
+				field_context.clearRect((width_of_sqare * cols) + 2, (height_of_sqare * rows) + 2, width_of_sqare - 2, height_of_sqare - 2);
+				
 		}
 	}
 }
