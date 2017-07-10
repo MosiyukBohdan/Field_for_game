@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", show_field);
 
 function show_field() {
 	let matrix_of_states;
-
+	localStorage.removeItem('position');
 	if (typeof(Storage) !== "undefined") {
 		if (localStorage['position']) 
 			matrix_of_states = filling_matrix_of_states(localStorage['position']);
@@ -15,7 +15,6 @@ function show_field() {
 			matrix_of_states = filling_matrix_of_states();
 	}
 
-	console.log(matrix_of_states);
 	let field = document.getElementById('field_of_game');
 	field_context = field.getContext("2d");
 
@@ -94,7 +93,6 @@ function filling_matrix_of_states(position) {
 
 	} else {
 		matrix_of_states = JSON.parse(position);
-		console.log(matrix_of_states);
 	}
 
 	return matrix_of_states;
@@ -102,6 +100,8 @@ function filling_matrix_of_states(position) {
 
 function selecting_circles(e, matrix_of_states, field_context) {
 	let RowCol = event_coordinates(e);
+	if (typeof(RowCol) === "undefined")
+		return;
 	let row = RowCol["row"];
 	let col = RowCol["col"];
 	
@@ -169,8 +169,14 @@ function selecting_circles(e, matrix_of_states, field_context) {
 }
 
 function event_coordinates(e) {
-	let row = Math.floor(e.clientY / (FIELD_HEIGHT / ROW));
-	let col = Math.floor(e.clientX / (FIELD_WIDTH / COL));
+	let field = document.getElementById('field_of_game');
+	let x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - field.offsetLeft;
+	let y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop - field.offsetTop;
+
+	if (x > 500 || y > 500)
+		return;
+	let row = Math.floor(y / (FIELD_HEIGHT / ROW));
+	let col = Math.floor(x / (FIELD_WIDTH / COL));
 	return {"row":row, "col":col};
 }
 
