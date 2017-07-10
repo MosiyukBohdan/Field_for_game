@@ -14,8 +14,6 @@ function show_field() {
 			matrix_of_states = filling_matrix_of_states();
 	}
 
-	console.log(matrix_of_states);
-
 	let field = document.getElementById('field_of_game');
 	field_context = field.getContext("2d");
 	field.addEventListener("click", function(event) { 
@@ -25,9 +23,12 @@ function show_field() {
 	let restart_button = document.getElementById('Restart');
 	restart_button.addEventListener("click", function() { 
 		localStorage.removeItem('position');
-		show_field();
+		clear_field();
+		matrix_of_states = filling_matrix_of_states();
+		draw_grid();
+		draw_circles(matrix_of_states);
 	});
-
+	console.log("Show");
 	draw_grid();
 	draw_circles(matrix_of_states);
 }
@@ -76,8 +77,7 @@ function draw_circles(matrix_of_states) {
 				field_context.stroke();
 				
 				field_context.closePath();
-			} else 
-				field_context.clearRect((width_of_sqare * cols) + 2, (height_of_sqare * rows) + 2, width_of_sqare - 2, height_of_sqare - 2);
+			} 
 				
 		}
 	}
@@ -203,4 +203,15 @@ function check_for_circle(row, col, matrix_of_states) {
 		return true;
 	else
 		return false;
+}
+
+function clear_field () {
+	let width_of_sqare = (FIELD_WIDTH / COL);
+	let height_of_sqare = (FIELD_HEIGHT / ROW);	
+
+	for (let rows = 0; rows < ROW; rows++) {
+		for (let cols = 0; cols < COL; cols++) {
+			field_context.clearRect((width_of_sqare * cols) + 2, (height_of_sqare * rows) + 2, width_of_sqare - 2, height_of_sqare - 2);
+		}
+	}
 }
